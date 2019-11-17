@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <script>
+         var squareSize = 10;
+         var c = document.getElementById("myCanvas");
+         var ctx = c.getContext("2d");
+         ctx.moveTo(0,0);
+         ctx.lineTo(200,100);
+         ctx.stroke();
+         ctx.fillStyle = rgb(255, 0, 0);
+         drawSquare(ctx, 2, 2);
+
+         function drawSquare(ctx, x, y) {
+            ctx.rect(x * squareSize, y * squareSize, squareSize, squareSize);
+            ctx.fill();
+            ctx.stroke();
+         }
+      </script>
+      
+   </head>
+   <body>
+
+   <canvas id="myCanvas" width="700" height="900" style="border:1px solid #d3d3d3;">Your browser does not support the HTML5 canvas tag.</canvas>
+
+
+   </body>
+</html>
+
