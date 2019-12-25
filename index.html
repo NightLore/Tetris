@@ -1,55 +1,25 @@
 <!DOCTYPE html>
 <html>
    <head>
-      <script>
-         window.onload = drawSquareDemo;
+      <script src="js/utils.js"></script>
+      <script src="js/keys.js"></script>
+      <script src="js/game_engine.js"></script>
+      <script src="js/game.js"></script>
+      <script src="js/main.js"></script>
+      <script type="application/javascript">
+         window.onload = function() {
+            Keys.addKeyListeners();
 
-         function drawSquareDemo() {
-            var squareSize = 10;
-            var c = document.getElementById("myCanvas");
-            var ctx = c.getContext("2d");
-            ctx.fillStyle = "rgb(255, 0, 0)";
-            drawSquare(ctx, 2, 2);
+            var canvas = document.getElementById("myCanvas");
+
+            var engine = new GameEngine(canvas, 30);
+            engine.setupInput();
+            drawSquareDemo();
          }
-
-         function drawSquare(ctx, x, y) {
-            ctx.rect(x * squareSize, y * squareSize, squareSize, squareSize);
-            ctx.fill();
-            ctx.stroke();
-         }
-
-         function left() {
-            console.log("Left");
-         }
-
-         function right() {
-            console.log("Right");
-         }
-
-         function rotateLeft() {
-            console.log("Rotate Left");
-         }
-
-         function rotateRight() {
-            console.log("Rotate Right");
-         }
-
-         function speedUp() {
-            console.log("Speed Up");
-         }
-
-         function drop(){
-            console.log("Drop");
-         }
-
-         function store() {
-            console.log("Store");
-         }
-
       </script>
    </head>
-   <body>
-   <canvas id="myCanvas" width="700" height="900" style="border:1px solid #d3d3d3;">Your browser does not support the HTML5 canvas tag.</canvas>
+   <body style="margin:0px; overflow: hidden; background-color: black;">
+   <canvas id="myCanvas" width="720" height="1280" style="width: 100%; height: 100%;">Your browser does not support the HTML5 canvas tag.</canvas>
 
 
    </body>
