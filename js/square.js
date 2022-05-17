@@ -52,29 +52,25 @@ function processKey(keyCode) {
 }
 
 function left() {
-    console.log("Left");
 }
 
 function right() {
-    console.log("Right");
 }
 
 function rotateLeft() {
-    console.log("Rotate Left");
 }
 
 function rotateRight() {
-console.log("Rotate Right");
 }
 
 function speedUp() {
-console.log("Speed Up");
+   console.log("Speed Up");
 }
 
-function drop(){
-console.log("Drop");
+function drop() {
+   console.log("Drop");
 }
 
 function store() {
-console.log("Store");
+   console.log("Store");
 }

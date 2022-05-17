@@ -69,8 +69,8 @@ GameEngine.prototype.run = function() {
  * Updates the logic of the game with all the game objects
  */
 GameEngine.prototype.update = function() {
-    for (var i = 0; i < this.uiObjects.length; i++) {
-        this.uiObjects[i].update(this.mouse);
+    for (var i = 0; i < this.gameObjects.length; i++) {
+        this.gameObjects[i].update(this.mouse);
     }
 }
  
@@ -80,4 +80,8 @@ GameEngine.prototype.update = function() {
 GameEngine.prototype.draw = function() {
     this.context2D.setTransform(1,0,0,1,0,0); // reset the transform matrix as it is cumulative
     this.context2D.clearRect(0, 0, this.canvas.width, this.canvas.height);//clear the viewport AFTER the matrix is reset
+}
+
+GameEngine.prototype.processKeyInput = function() {
+   
 }

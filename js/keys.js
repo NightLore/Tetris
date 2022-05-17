@@ -37,16 +37,13 @@ var Keys = {
         delete this._pressed[e.keyCode];
     },
 
-    addKeyListeners: function() {}
+    addKeyListeners: function() {
+       document.addEventListener('keyup', function(event) {
+           Keys.onKeyup(event);
+       });
+       document.addEventListener('keydown', function(event) {
+           Keys.onKeydown(event);
+       });
+    },
 };
-
-
-Keys.addKeyListeners = function() {
-    document.addEventListener('keyup', function(event) {
-        Keys.onKeyup(event);
-    });
-    document.addEventListener('keydown', function(event) {
-        Keys.onKeydown(event);
-    });
-}
 

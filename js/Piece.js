@@ -1,5 +1,5 @@
 
-var Pieces = {
+var Tetrominos = {
     I: [[' ', ' ', ' ', ' '],
         ['X', 'X', 'X', 'X'],
         [' ', ' ', ' ', ' '],
@@ -22,26 +22,33 @@ var Pieces = {
         ['X', 'X', 'X'],
         [' ', ' ', ' ']],
 
-    getAllPieces: function() {
+    getAllTetrominos: function() {
         return [I, O, T, S, Z, J, L];
     },
 
-    getRandomPiece: function() {
-        var pieces = getAllPieces();
-        return pieces[Math.random() * pieces.length];
+    getRandomTetromino: function() {
+        var tetrominos= getAllTetrominos();
+        return tetrominos[Math.random() * tetrominos.length];
     },
-
-    rotateLeft: function(piece) {
-    },
-
-    rotateRight: function(piece) {
-    }
 }
 var Piece = function(p) {
-    this.piece = p || Pieces.getRandomPiece();
+    this.piece = p || Tetrominos.getRandomTetromino();
+}
+
+Piece.prototype.moveLeft() = function() {
+    console.log("Left");
+}
+
+Piece.prototype.moveRight() = function() {
+    console.log("Right");
+}
+
+Piece.prototype.moveDown() = function() {
+    console.log("Down");
 }
 
 Piece.prototype.rotateLeft = function() {
+    console.log("Rotate Left");
     var temp;
     var size = this.piece.length;
     var limit = Math.floor(size / 2);
@@ -57,6 +64,7 @@ Piece.prototype.rotateLeft = function() {
 }
 
 Piece.prototype.rotateRight = function() {
+   console.log("Rotate Right");
     var temp;
     var size = this.piece.length;
     var limit = Math.floor(size / 2);
