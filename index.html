@@ -1,27 +1,27 @@
 <!DOCTYPE html>
 <html>
-   <head>
-      <script src="js/utils.js"></script>
-      <script src="js/keys.js"></script>
-      <script src="js/Piece.js"></script>
-      <script src="js/game_engine.js"></script>
-      <script src="js/main.js"></script>
-      <script type="application/javascript">
-         window.onload = function() {
-            Keys.addKeyListeners();
+  <head>
+    <script src="js/utils.js"></script>
+    <script src="js/keys.js"></script>
+    <script src="js/Piece.js"></script>
+    <script src="js/game_engine.js"></script>
+    <script src="js/main.js"></script>
+    <script type="application/javascript">
+      window.onload = function() {
+        Keys.addKeyListeners();
 
-            var canvas = document.getElementById("myCanvas");
+        var canvas = document.getElementById("myCanvas");
 
-            var engine = new GameEngine(canvas, 30);
-            engine.setupInput();
-            drawSquareDemo();
-         }
-      </script>
-   </head>
-   <body style="margin:0px; overflow: hidden; background-color: black;">
-   <canvas id="myCanvas" width="720" height="1280" style="width: 100%; height: 100%;">Your browser does not support the HTML5 canvas tag.</canvas>
+        var engine = new GameEngine(canvas, 30);
+        engine.setupInput();
+        drawSquareDemo();
+      }
+    </script>
+  </head>
+  <body style="margin:0px; overflow: hidden; background-color: black;">
+  <canvas id="myCanvas" width="720" height="1280" style="width: 100%; height: 100%;">Your browser does not support the HTML5 canvas tag.</canvas>
 
 
-   </body>
+  </body>
 </html>
 
