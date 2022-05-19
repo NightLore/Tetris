@@ -10,6 +10,7 @@ var GameEngine = function(canvas, FPS) {
    this.height = canvas.height;
    this.uiObjects = [];
    this.gameObjects = [];
+   this.activePiece = new Piece();
 }
  
 /**
@@ -69,6 +70,7 @@ GameEngine.prototype.run = function() {
  * Updates the logic of the game with all the game objects
  */
 GameEngine.prototype.update = function() {
+   this.processKeyInput();
    for (var i = 0; i < this.gameObjects.length; i++) {
       this.gameObjects[i].update(this.mouse);
    }
@@ -83,5 +85,32 @@ GameEngine.prototype.draw = function() {
 }
 
 GameEngine.prototype.processKeyInput = function() {
-   
+   // left
+   if (Keys.isPressed(Keys.A, Keys.LEFT)) {
+      this.activePiece.moveLeft();
+   }
+   // up/store
+   else if (Keys.isPressed(Keys.W, Keys.UP, Keys.C)) {
+      console.log("store");
+   }
+   // right
+   else if (Keys.isPressed(Keys.D, Keys.RIGHT)) {
+      this.activePiece.moveRight();
+   }
+   // down
+   else if (Keys.isPressed(Keys.S, Keys.DOWN)) {
+      this.activePiece.moveDown();
+   }
+   // rotate left
+   else if (Keys.isPressed(Keys.Q, Keys.Z)) {
+      this.activePiece.rotateLeft();
+   }
+   // rotate right
+   else if (Keys.isPressed(Keys.E, Keys.X)) {
+      this.activePiece.rotateRight();
+   }
+   // drop
+   else if (Keys.isPressed(Keys.SPACE, Keys.ENTER)) {
+      console.log("drop");
+   }
 }

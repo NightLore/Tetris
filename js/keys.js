@@ -25,25 +25,21 @@ var Keys = {
    X: 88,
    Z: 90,
 
-   isDown: function(keyCode) {
-      return this._pressed[keyCode];
+   isPressed: function() {
+      for (var i = 0; i < arguments.length; i++)
+      {
+         if (this._pressed[arguments[i]])
+            return true;
+      }
+      return false;
    },
     
-   onKeydown: function(e) {
-      this._pressed[e.keyCode] = true;
-   },
-    
-   onKeyup: function(e) {
-      delete this._pressed[e.keyCode];
-   },
+   onKeyDown: function(e) { this._pressed[e.keyCode] = true; },
+   onKeyUp: function(e) { delete this._pressed[e.keyCode]; },
 
    addKeyListeners: function() {
-      document.addEventListener('keyup', function(event) {
-         Keys.onKeyup(event);
-      });
-      document.addEventListener('keydown', function(event) {
-         Keys.onKeydown(event);
-      });
+      document.addEventListener('keydown', this.onKeyDown.bind(this));
+      document.addEventListener('keyup', this.onKeyUp.bind(this));
    },
 };
 

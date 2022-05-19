@@ -3,9 +3,9 @@
   <head>
     <script src="js/utils.js"></script>
     <script src="js/keys.js"></script>
-    <script src="js/Piece.js"></script>
+    <script src="js/square.js"></script>
+    <script src="js/piece.js"></script>
     <script src="js/game_engine.js"></script>
-    <script src="js/main.js"></script>
     <script type="application/javascript">
       window.onload = function() {
         Keys.addKeyListeners();
@@ -14,7 +14,7 @@
 
         var engine = new GameEngine(canvas, 30);
         engine.setupInput();
-        drawSquareDemo();
+        engine.run();
       }
     </script>
   </head>
