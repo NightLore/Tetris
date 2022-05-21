@@ -86,31 +86,31 @@ GameEngine.prototype.draw = function() {
 
 GameEngine.prototype.processKeyInput = function() {
    // left
-   if (Keys.isPressed(Keys.A, Keys.LEFT)) {
+   if (Keys.isPressed(true, Keys.A, Keys.LEFT)) {
       this.activePiece.moveLeft();
    }
    // up/store
-   else if (Keys.isPressed(Keys.W, Keys.UP, Keys.C)) {
+   else if (Keys.isPressed(true, Keys.W, Keys.UP, Keys.C)) {
       console.log("store");
    }
    // right
-   else if (Keys.isPressed(Keys.D, Keys.RIGHT)) {
+   else if (Keys.isPressed(true, Keys.D, Keys.RIGHT)) {
       this.activePiece.moveRight();
    }
    // down
-   else if (Keys.isPressed(Keys.S, Keys.DOWN)) {
+   else if (Keys.isPressed(false, Keys.S, Keys.DOWN)) {
       this.activePiece.moveDown();
    }
    // rotate left
-   else if (Keys.isPressed(Keys.Q, Keys.Z)) {
+   else if (Keys.isPressed(true, Keys.Q, Keys.Z)) {
       this.activePiece.rotateLeft();
    }
    // rotate right
-   else if (Keys.isPressed(Keys.E, Keys.X)) {
+   else if (Keys.isPressed(true, Keys.E, Keys.X)) {
       this.activePiece.rotateRight();
    }
    // drop
-   else if (Keys.isPressed(Keys.SPACE, Keys.ENTER)) {
+   else if (Keys.isPressed(true, Keys.SPACE, Keys.ENTER)) {
       console.log("drop");
    }
 }

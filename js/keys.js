@@ -1,6 +1,7 @@
 
 var Keys = {
    _pressed: {},
+   _processed: {},
 
    W: 87,
    A: 65,
@@ -25,17 +26,29 @@ var Keys = {
    X: 88,
    Z: 90,
 
-   isPressed: function() {
-      for (var i = 0; i < arguments.length; i++)
+   /**
+    * First parameter is whether or not to mark the key as processed.
+    * Rest of the parameters are keyCodes to check.
+    * Returns the first keyCode of the given keys that is pressed and not processed
+    *    false otherwise.
+    */
+   isPressed: function(shouldProcess, ...keyCodes) {
+      for (let i = 0; i < keyCodes.length; i++)
       {
-         if (this._pressed[arguments[i]])
-            return true;
+         let keyCode = keyCodes[i];
+         if (this._pressed[keyCode] && !this._processed[keyCode]) {
+            this._processed[keyCode] = shouldProcess;
+            return keyCode;
+         }
       }
       return false;
    },
     
    onKeyDown: function(e) { this._pressed[e.keyCode] = true; },
-   onKeyUp: function(e) { delete this._pressed[e.keyCode]; },
+   onKeyUp: function(e) {
+      delete this._pressed[e.keyCode];
+      delete this._processed[e.keyCode];
+   },
 
    addKeyListeners: function() {
       document.addEventListener('keydown', this.onKeyDown.bind(this));
