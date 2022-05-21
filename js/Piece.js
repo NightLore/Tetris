@@ -1,26 +1,6 @@
 
 var Tetrominos = {
-   All: [[[' ', ' ', ' ', ' '],
-          ['X', 'X', 'X', 'X'],
-          [' ', ' ', ' ', ' '],
-          [' ', ' ', ' ', ' ']],
-         [['X', 'X'],
-          ['X', 'X']],
-         [[' ', 'X', ' '],
-          ['X', 'X', 'X'],
-          [' ', ' ', ' ']],
-         [[' ', 'X', 'X'],
-          ['X', 'X', ' '],
-          [' ', ' ', ' ']],
-         [['X', 'X', ' '],
-          [' ', 'X', 'X'],
-          [' ', ' ', ' ']],
-         [['X', ' ', ' '],
-          ['X', 'X', 'X'],
-          [' ', ' ', ' ']],
-         [[' ', ' ', 'X'],
-          ['X', 'X', 'X'],
-          [' ', ' ', ' ']]],
+   _all: [],
 
    I: [[' ', ' ', ' ', ' '],
        ['X', 'X', 'X', 'X'],
@@ -45,26 +25,18 @@ var Tetrominos = {
        [' ', ' ', ' ']],
 
    getAll: function() {
-      console.log("GetAll", this);
       return [this.I, this.O, this.T, this.S, this.Z, this.J, this.L];
    },
 
    getRandom: function() {
-      var tetrominos = this.getAll();
-      return tetrominos[Math.random() * tetrominos.length];
+      if (this._all.length == 0)
+         this._all = this.getAll();
+      var index = Math.floor(Math.random() * this._all.length);
+      var tetromino = this._all.splice(index, 1)[0];
+      console.log(index, tetromino);
+      return tetromino;
    },
 }
-
-/*
-Tetrominos.getAll = function() {
-   return [Tetrominos.I, Tetrominos.O, Tetrominos.T, Tetrominos.S, Tetrominos.Z, Tetrominos.J, Tetrominos.L];
-},
-
-Tetrominos.getRandom = function() {
-   var tetrominos = Tetrominos.getAll();
-   return tetrominos[Math.random() * tetrominos.length];
-},
-*/
 
 var Piece = function(p) {
    this.piece = p || Tetrominos.getRandom();
@@ -83,36 +55,35 @@ Piece.prototype.moveDown = function() {
 }
 
 Piece.prototype.rotateLeft = function() {
-   console.log("Rotate Left start", this);
-   var temp;
-   var size = this.piece.length;
-   var limit = Math.floor(size / 2);
-   for (var row = 0; row < limit; row++) {
-      for (var col = 0; col < limit; col++) {
-         temp = this.piece[row][col];
-         this.piece[row][col] = this.piece[row][size-1-col];
-         this.piece[row][size-1-col] = this.piece[size-1-row][size-1-col];
-         this.piece[size-1-row][size-1-col] = this.piece[size-1-row][col];
-         this.piece[size-1-row][col] = temp;
+   const size = this.piece.length;
+   const x = Math.floor(size / 2);
+   const y = size - 1;
+   for (let i = 0; i < x; i++) {
+      for (let j = i; j < y - i; j++) {
+         let temp = this.piece[i][j];
+         this.piece[i][j] = this.piece[j][y-i];
+         this.piece[j][y-i] = this.piece[y-i][y-j];
+         this.piece[y-i][y-j] = this.piece[y-j][i];
+         this.piece[y-j][i] = temp;
       }
    }
-   console.log("Rotate Left", this.piece);
+   console.log("Rotate Left", size, x, y, this.piece);
 }
 
 Piece.prototype.rotateRight = function() {
-   var temp;
-   var size = this.piece.length;
-   var limit = Math.floor(size / 2);
-   for (var row = 0; row < limit; row++) {
-      for (var col = 0; col < limit; col++) {
-         temp = this.piece[row][col];
-         this.piece[row][col] = this.piece[size-1-row][col];
-         this.piece[size-1-row][col] = this.piece[size-1-row][size-1-col];
-         this.piece[size-1-row][size-1-col] = this.piece[row][size-1-col];
-         this.piece[row][size-1-col] = temp;
+   const size = this.piece.length;
+   const x = Math.floor(size / 2);
+   const y = size - 1;
+   for (let i = 0; i < x; i++) {
+      for (let j = i; j < y - i; j++) {
+         let temp = this.piece[i][j];
+         this.piece[i][j] = this.piece[y-j][i];
+         this.piece[y-j][i] = this.piece[y-i][y-j];
+         this.piece[y-i][y-j] = this.piece[j][y-i];
+         this.piece[j][y-i] = temp;
       }
    }
-   console.log("Rotate Right", this.piece);
+   console.log("Rotate Right", size, x, y, this.piece);
 }
 
 Piece.prototype.draw = function(ctx) {
