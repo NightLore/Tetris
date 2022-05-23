@@ -34,10 +34,39 @@ Grid.prototype.isColliding = function(piece) {
 }
 
 Grid.prototype.addPiece = function(piece) {
-   let squares = piece.getSquares();
+   let rows = new Set();
+   const squares = piece.getSquares();
    for (let i = 0; i < squares.length; i++) {
-      let {x, y, color} = squares[i];
+      const {x, y, color} = squares[i];
       this._board[x][y] = color;
+      rows.add(y);
+   }
+   for (const row of rows.values()) {
+      if (this.checkRow(row)) {
+         this.removeRow(row);
+      }
+   }
+}
+
+/**
+ * Return true if row should be removed, false otherwise
+ */
+Grid.prototype.checkRow = function(row) {
+   for (let i = 0; i < this._width; i++) {
+      if (!this._board[i][row])
+         return false;
+   }
+   return true;
+}
+
+/**
+ * Remove row and shift all rows above it down
+ */
+Grid.prototype.removeRow = function(row) {
+   for (let i = 0; i < this._width; i++) {
+      for (let j = row; j >= 0; j--) {
+         this._board[i][j] = this._board[i][j-1];
+      }
    }
 }
 
