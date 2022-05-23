@@ -9,8 +9,9 @@ var GameEngine = function(canvas, FPS) {
    this.width = canvas.width;
    this.height = canvas.height;
    this.uiObjects = [];
-   this.gameObjects = [];
-   this.activePiece = new Piece();
+   this._grid = new Grid(10, 20);
+   this._activePiece = new Piece();
+   console.log("Engine created. FPS set to", FPS, this.FPS);
 }
  
 /**
@@ -49,6 +50,7 @@ GameEngine.prototype.resize_canvas = function() {
    var newHeight = this.width / aspectRatio;
    this.canvas.height = newHeight;
    this.height = newHeight;
+   this.draw();
 }
  
 /**
@@ -71,9 +73,6 @@ GameEngine.prototype.run = function() {
  */
 GameEngine.prototype.update = function() {
    this.processKeyInput();
-   for (var i = 0; i < this.gameObjects.length; i++) {
-      this.gameObjects[i].update(this.mouse);
-   }
 }
  
 /**
@@ -82,12 +81,14 @@ GameEngine.prototype.update = function() {
 GameEngine.prototype.draw = function() {
    this.context2D.setTransform(1,0,0,1,0,0); // reset the transform matrix as it is cumulative
    this.context2D.clearRect(0, 0, this.canvas.width, this.canvas.height);//clear the viewport AFTER the matrix is reset
+   this._grid.draw(this.context2D);
+   this._activePiece.draw(this.context2D);
 }
 
 GameEngine.prototype.processKeyInput = function() {
    // left
    if (Keys.isPressed(true, Keys.A, Keys.LEFT)) {
-      this.activePiece.moveLeft();
+      this._activePiece.moveLeft(this._grid);
    }
    // up/store
    else if (Keys.isPressed(true, Keys.W, Keys.UP, Keys.C)) {
@@ -95,19 +96,19 @@ GameEngine.prototype.processKeyInput = function() {
    }
    // right
    else if (Keys.isPressed(true, Keys.D, Keys.RIGHT)) {
-      this.activePiece.moveRight();
+      this._activePiece.moveRight(this._grid);
    }
    // down
    else if (Keys.isPressed(false, Keys.S, Keys.DOWN)) {
-      this.activePiece.moveDown();
+      this._activePiece.moveDown(this._grid);
    }
    // rotate left
    else if (Keys.isPressed(true, Keys.Q, Keys.Z)) {
-      this.activePiece.rotateLeft();
+      this._activePiece.rotateLeft();
    }
    // rotate right
    else if (Keys.isPressed(true, Keys.E, Keys.X)) {
-      this.activePiece.rotateRight();
+      this._activePiece.rotateRight();
    }
    // drop
    else if (Keys.isPressed(true, Keys.SPACE, Keys.ENTER)) {

@@ -38,20 +38,53 @@ var Tetrominos = {
    },
 }
 
-var Piece = function(p) {
+var Piece = function(x, y, color, p) {
    this.piece = p || Tetrominos.getRandom();
+   this.x = x || 0;
+   this.y = y || 0;
+   this.color = color || "rgb(255, 0, 0)";
 }
 
-Piece.prototype.moveLeft = function() {
-   console.log("Left");
+/**
+ * Attempt to move piece left in the given grid.
+ * Does not move if it will collide with grid.
+ * Returns true if succeeded to move left, false otherwise.
+ */
+Piece.prototype.moveLeft = function(grid) {
+   this.x--;
+   if (grid.isColliding(this)) {
+      this.x++;
+      return false;
+   }
+   return true;
 }
 
-Piece.prototype.moveRight = function() {
-   console.log("Right");
+/**
+ * Attempt to move piece right in the given grid.
+ * Does not move if it will collide with grid.
+ * Returns true if succeeded to move right, false otherwise.
+ */
+Piece.prototype.moveRight = function(grid) {
+   this.x++;
+   if (grid.isColliding(this)) {
+      this.x--;
+      return false;
+   }
+   return true;
 }
 
-Piece.prototype.moveDown = function() {
-   console.log("Down");
+/**
+ * Attempt to move piece down in the given grid.
+ * Does not move if it will collide with grid.
+ * Returns true if succeeded to move down, false otherwise.
+ */
+Piece.prototype.moveDown = function(grid) {
+   this.y++;
+   if (grid.isColliding(this)) {
+      this.y--;
+      return false;
+   }
+   return true;
 }
 
 Piece.prototype.rotateLeft = function() {
@@ -86,5 +119,34 @@ Piece.prototype.rotateRight = function() {
    console.log("Rotate Right", size, x, y, this.piece);
 }
 
+Piece.prototype.getSquares = function() {
+   const size = this.piece.length;
+   let squares = [];
+   for (let i = 0; i < size; i++) {
+      for (let j = 0; j < size; j++) {
+         if (this.piece[i][j] !== 'X')
+            continue;
+
+         squares.push({
+            x: this.x + i,
+            y: this.y + j,
+            color: this.color,
+         });
+      }
+   }
+   return squares;
+}
+
 Piece.prototype.draw = function(ctx) {
+   ctx.beginPath();
+   ctx.fillStyle = this.color;
+   const size = this.piece.length;
+   for (let i = 0; i < size; i++) {
+      for (let j = 0; j < size; j++) {
+         if (this.piece[i][j] !== 'X')
+            continue;
+
+         drawSquare(ctx, this.x + i, this.y + j);
+      }
+   }
 }
