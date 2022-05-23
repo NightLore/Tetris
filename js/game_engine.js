@@ -46,8 +46,8 @@ GameEngine.prototype.setupInput = function() {
 }
 
 GameEngine.prototype.resize_canvas = function() {
-   var aspectRatio = window.innerWidth / window.innerHeight;
-   var newHeight = this.width / aspectRatio;
+   const aspectRatio = window.innerWidth / window.innerHeight;
+   const newHeight = this.width / aspectRatio;
    this.canvas.height = newHeight;
    this.height = newHeight;
    this.draw();
@@ -87,34 +87,34 @@ GameEngine.prototype.draw = function() {
 
 GameEngine.prototype.processKeyInput = function() {
    // left
-   if (Keys.isPressed(true, Keys.A, Keys.LEFT)) {
+   if (Keys.isPressed(false, Keys.A, Keys.LEFT)) {
       this._activePiece.moveLeft(this._grid);
    }
-   // up/store
-   else if (Keys.isPressed(true, Keys.W, Keys.UP, Keys.C)) {
+   // store
+   if (Keys.isPressed(true, Keys.W, Keys.C, Keys.LEFTSHIFT, Keys.RIGHTSHIFT)) {
       console.log("store");
    }
    // right
-   else if (Keys.isPressed(true, Keys.D, Keys.RIGHT)) {
+   if (Keys.isPressed(false, Keys.D, Keys.RIGHT)) {
       this._activePiece.moveRight(this._grid);
    }
    // down
-   else if (Keys.isPressed(false, Keys.S, Keys.DOWN)) {
+   if (Keys.isPressed(false, Keys.S, Keys.DOWN)) {
       if (!this._activePiece.moveDown(this._grid)) {
          this._grid.addPiece(this._activePiece);
          this._activePiece = new Piece();
       }
    }
    // rotate left
-   else if (Keys.isPressed(true, Keys.Q, Keys.Z)) {
+   if (Keys.isPressed(true, Keys.Q, Keys.Z)) {
       this._activePiece.rotateLeft();
    }
    // rotate right
-   else if (Keys.isPressed(true, Keys.E, Keys.X)) {
+   if (Keys.isPressed(true, Keys.E, Keys.UP,  Keys.X)) {
       this._activePiece.rotateRight();
    }
    // drop
-   else if (Keys.isPressed(true, Keys.SPACE, Keys.ENTER)) {
+   if (Keys.isPressed(true, Keys.SPACE, Keys.ENTER)) {
       console.log("drop");
    }
 }

@@ -3,28 +3,31 @@ var Keys = {
    _pressed: {},
    _processed: {},
 
-   W: 87,
-   A: 65,
-   S: 83,
-   D: 68,
-   SPACE: 32,
-   ENTER: 13,
-   TAB: 9,
-   ESC: 27,
-   BACKSPACE: 8,
+   W: "KeyW",
+   A: "KeyA",
+   S: "KeyS",
+   D: "KeyD",
+   SPACE: "Space",
+   ENTER: "Enter",
+   TAB: "Tab",
+   ESC: "Escape",
+   BACKSPACE: "Backspace",
+   LEFTSHIFT: "ShiftLeft",
+   RIGHTSHIFT: "ShiftRight",
 
-   LEFT: 37,
-   UP: 38,
-   RIGHT: 39,
-   DOWN: 40,
 
-   B: 66,
-   C: 67,
-   D: 68,
-   E: 69,
-   Q: 81,
-   X: 88,
-   Z: 90,
+   LEFT: "ArrowLeft",
+   UP: "ArrowUp",
+   RIGHT: "ArrowRight",
+   DOWN: "ArrowDown",
+
+   B: "KeyB",
+   C: "KeyC",
+   D: "KeyD",
+   E: "KeyE",
+   Q: "KeyQ",
+   X: "KeyX",
+   Z: "KeyZ",
 
    /**
     * First parameter is whether or not to mark the key as processed.
@@ -44,10 +47,10 @@ var Keys = {
       return false;
    },
     
-   onKeyDown: function(e) { this._pressed[e.keyCode] = true; },
+   onKeyDown: function(e) { this._pressed[e.code] = true; },
    onKeyUp: function(e) {
-      delete this._pressed[e.keyCode];
-      delete this._processed[e.keyCode];
+      delete this._pressed[e.code];
+      delete this._processed[e.code];
    },
 
    addKeyListeners: function() {
