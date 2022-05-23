@@ -11,6 +11,7 @@ var GameEngine = function(canvas, FPS) {
    this.uiObjects = [];
    this._grid = new Grid(10, 20);
    this._activePiece = new Piece();
+   this._storedPiece = undefined;
    console.log("Engine created. FPS set to", FPS, this.FPS);
 }
  
@@ -83,6 +84,8 @@ GameEngine.prototype.draw = function() {
    this.context2D.clearRect(0, 0, this.canvas.width, this.canvas.height);//clear the viewport AFTER the matrix is reset
    this._grid.draw(this.context2D);
    this._activePiece.draw(this.context2D);
+   if (this._storedPiece)
+      this._storedPiece.draw(this.context2D);
 }
 
 GameEngine.prototype.processKeyInput = function() {
@@ -93,6 +96,13 @@ GameEngine.prototype.processKeyInput = function() {
    // store
    if (Keys.isPressed(true, Keys.W, Keys.C, Keys.LEFTSHIFT, Keys.RIGHTSHIFT)) {
       console.log("store");
+      var piece = this._storedPiece;
+      this._storedPiece = this._activePiece;
+      this._activePiece = piece || new Piece();
+      this._activePiece.x = 0;
+      this._activePiece.y = 0;
+      this._storedPiece.x = 15;
+      this._storedPiece.y = 2;
    }
    // right
    if (Keys.isPressed(false, Keys.D, Keys.RIGHT)) {
