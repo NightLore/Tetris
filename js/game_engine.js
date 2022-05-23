@@ -100,7 +100,10 @@ GameEngine.prototype.processKeyInput = function() {
    }
    // down
    else if (Keys.isPressed(false, Keys.S, Keys.DOWN)) {
-      this._activePiece.moveDown(this._grid);
+      if (!this._activePiece.moveDown(this._grid)) {
+         this._grid.addPiece(this._activePiece);
+         this._activePiece = new Piece();
+      }
    }
    // rotate left
    else if (Keys.isPressed(true, Keys.Q, Keys.Z)) {

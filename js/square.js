@@ -30,7 +30,6 @@ Grid.prototype.isColliding = function(piece) {
          return true;
       }
    }
-   console.log("did not collide", piece.x, piece.y);
    return false;
 }
 
@@ -48,6 +47,17 @@ Grid.prototype.draw = function(ctx) {
    for (let i = 0; i < this._width; i++) {
       for (let j = 0; j < this._height; j++) {
          drawSquare(ctx, i, j);
+      }
+   }
+
+   ctx.beginPath();
+   for (let i = 0; i < this._width; i++) {
+      for (let j = 0; j < this._height; j++) {
+         if (this._board[i][j]) {
+            ctx.fillStyle = this._board[i][j];
+            drawSquare(ctx, i, j);
+            ctx.beginPath();
+         }
       }
    }
 }
