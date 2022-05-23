@@ -117,11 +117,11 @@ GameEngine.prototype.processKeyInput = function() {
    }
    // rotate left
    if (Keys.isPressed(true, Keys.Q, Keys.Z)) {
-      this._activePiece.rotateLeft();
+      this._activePiece.rotateLeft(this._grid);
    }
    // rotate right
    if (Keys.isPressed(true, Keys.E, Keys.UP,  Keys.X)) {
-      this._activePiece.rotateRight();
+      this._activePiece.rotateRight(this._grid);
    }
    // drop
    if (Keys.isPressed(true, Keys.SPACE, Keys.ENTER)) {

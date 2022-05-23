@@ -87,7 +87,7 @@ Piece.prototype.moveDown = function(grid) {
    return true;
 }
 
-Piece.prototype.rotateLeft = function() {
+Piece.prototype.rotateLeft = function(grid) {
    const size = this.piece.length;
    const x = Math.floor(size / 2);
    const y = size - 1;
@@ -100,10 +100,11 @@ Piece.prototype.rotateLeft = function() {
          this.piece[y-j][i] = temp;
       }
    }
-   console.log("Rotate Left", size, x, y, this.piece);
+   if (grid.isColliding(this))
+      this.x += this.x <= 0 ? 1 : -1;
 }
 
-Piece.prototype.rotateRight = function() {
+Piece.prototype.rotateRight = function(grid) {
    const size = this.piece.length;
    const x = Math.floor(size / 2);
    const y = size - 1;
@@ -116,7 +117,8 @@ Piece.prototype.rotateRight = function() {
          this.piece[j][y-i] = temp;
       }
    }
-   console.log("Rotate Right", size, x, y, this.piece);
+   if (grid.isColliding(this))
+      this.x += this.x <= 0 ? 1 : -1;
 }
 
 Piece.prototype.getSquares = function() {
