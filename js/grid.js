@@ -1,12 +1,4 @@
 
-const SQUARE_SIZE = 10;
-
-function drawSquare(ctx, x, y) {
-   ctx.rect(x * SQUARE_SIZE, y * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
-   ctx.fill();
-   ctx.stroke();
-}
-
 var Grid = function(width, height) {
    this._width = width;
    this._height = height;
@@ -23,28 +15,27 @@ Grid.prototype.inBounds = function(x, y) {
 }
 
 Grid.prototype.isColliding = function(piece) {
-   let squares = piece.getSquares();
+   const squares = piece.getSquares();
    for (let i = 0; i < squares.length; i++) {
-      let {x, y} = squares[i];
-      if (!this.inBounds(x, y) || this._board[x][y]) {
+      const {x, y} = squares[i];
+      if (!this.inBounds(x, y) || this._board[x][y])
          return true;
-      }
    }
    return false;
 }
 
 Grid.prototype.addPiece = function(piece) {
-   let rows = new Set();
+   const rows = new Set();
    const squares = piece.getSquares();
    for (let i = 0; i < squares.length; i++) {
       const {x, y, color} = squares[i];
       this._board[x][y] = color;
       rows.add(y);
    }
+
    for (const row of rows.values()) {
-      if (this.checkRow(row)) {
+      if (this.checkRow(row))
          this.removeRow(row);
-      }
    }
 }
 
@@ -82,11 +73,12 @@ Grid.prototype.draw = function(ctx) {
    ctx.beginPath();
    for (let i = 0; i < this._width; i++) {
       for (let j = 0; j < this._height; j++) {
-         if (this._board[i][j]) {
-            ctx.fillStyle = this._board[i][j];
-            drawSquare(ctx, i, j);
-            ctx.beginPath();
-         }
+         if (!this._board[i][j])
+            continue;
+
+         ctx.fillStyle = this._board[i][j];
+         drawSquare(ctx, i, j);
+         ctx.beginPath();
       }
    }
 }
