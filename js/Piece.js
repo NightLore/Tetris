@@ -27,6 +27,8 @@ Piece.prototype.setCenterPosition = function() {
    const halfWidth = this.piece.length / 2;
    this.x = -halfWidth;
    this.y = -halfWidth;
+   if (this.tetromino.index == 1) // adjust more if O piece
+      this.y -= 0.5;
 }
 
 Piece.prototype.move = function(dirX, dirY) {

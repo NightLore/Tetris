@@ -1,5 +1,5 @@
 const UI_BOX_SIZE = 5 * SQUARE_SIZE;
-const NUM_NEXT_PIECES = 4;
+const NUM_NEXT_PIECES = 5;
 
 var Grid = function(x, y, width, height) {
    this._x = x - width / 2 * SQUARE_SIZE;
@@ -20,9 +20,9 @@ var Grid = function(x, y, width, height) {
       boxX: width * SQUARE_SIZE + 2,
       boxY: 1,
       boxWidth: UI_BOX_SIZE,
-      boxHeight: UI_BOX_SIZE * NUM_NEXT_PIECES * 2 / 3,
+      boxHeight: UI_BOX_SIZE * NUM_NEXT_PIECES * 4 / 7,
       pieceX: UI_BOX_SIZE / 2,
-      pieceY: UI_BOX_SIZE / 2 + SQUARE_SIZE / 2,
+      pieceY: UI_BOX_SIZE / 2,
    };
 
    this._nextPieces = new Array(NUM_NEXT_PIECES);
