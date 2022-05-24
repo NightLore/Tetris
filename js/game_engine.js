@@ -98,7 +98,7 @@ GameEngine.prototype.processKeyInput = function() {
    }
    // down
    if (Keys.isPressed(false, Keys.S, Keys.DOWN)) {
-      this._grid.movePieceDown();
+      this._grid.moveActivePieceDown();
    }
 
    // rotate left
@@ -106,12 +106,12 @@ GameEngine.prototype.processKeyInput = function() {
       this._grid.rotatePieceCounterClockwise();
    }
    // rotate right
-   if (Keys.isPressed(true, Keys.E, Keys.UP,  Keys.X)) {
+   if (Keys.isPressed(true, Keys.E, Keys.UP, Keys.X)) {
       this._grid.rotatePieceClockwise();
    }
 
    // drop
    if (Keys.isPressed(true, Keys.SPACE, Keys.ENTER)) {
-      this._grid.dropPiece();
+      this._grid.dropActivePiece();
    }
 }

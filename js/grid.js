@@ -7,6 +7,10 @@ var Grid = function(x, y, width, height) {
    this._width = width;
    this._height = height;
    this._color = "rgb(50, 50, 50)";
+   this._board = new Array(width);
+   for (let i = 0; i < width; i++) {
+      this._board[i] = new Array(height);
+   }
 
    this._spawnPosition = { x: Math.floor(width / 2), y: 0 };
    this._storeProps = {
@@ -25,18 +29,16 @@ var Grid = function(x, y, width, height) {
       pieceY: UI_BOX_SIZE / 2,
    };
 
+   this._storedPiece = null;
+   this._ghostPiece = new Piece();
+   this._ghostPiece.strokeColor = "white";
+   this._ghostPiece.tetromino = { color: "transparent" }; // set fill color
    this._nextPieces = new Array(NUM_NEXT_PIECES);
    for (let i = 0; i < NUM_NEXT_PIECES; i++) {
-      this._nextPieces[i] = new Piece(this._spawnPosition);
+      this._nextPieces[i] = new Piece(Tetrominos.getRandom());
       this._nextPieces[i].setCenterPosition();
    }
    this.getNewActivePiece();
-   this._storedPiece = null;
-
-   this._board = new Array(width);
-   for (let i = 0; i < width; i++) {
-      this._board[i] = new Array(height);
-   }
 }
 
 Grid.prototype.draw = function(ctx) {
@@ -68,6 +70,7 @@ Grid.prototype.draw = function(ctx) {
 
    // active piece
    this._activePiece.draw(ctx);
+   this._ghostPiece.draw(ctx);
 
    // store box
    ctx.beginPath();
@@ -103,8 +106,8 @@ Grid.prototype.inBounds = function(x, y) {
        && 0 <= y && y < this._height;
 }
 
-Grid.prototype.isPieceColliding = function() {
-   const squares = this._activePiece.getSquares();
+Grid.prototype.isPieceColliding = function(piece) {
+   const squares = piece.getSquares();
    for (let i = 0; i < squares.length; i++) {
       const {x, y} = squares[i];
       if (!this.inBounds(x, y) || this._board[x][y])
@@ -113,11 +116,19 @@ Grid.prototype.isPieceColliding = function() {
    return false;
 }
 
+Grid.prototype.updateGhostPiece = function() {
+   this._ghostPiece.x = this._activePiece.x;
+   this._ghostPiece.y = this._activePiece.y;
+   this.dropPiece(this._ghostPiece);
+}
+
 Grid.prototype.getNewActivePiece = function() {
    this._activePiece = this._nextPieces.shift();
    this._activePiece.setPosition(this._spawnPosition);
+   this._ghostPiece.piece = this._activePiece.piece;
+   this.updateGhostPiece();
 
-   const nextPiece = new Piece();
+   const nextPiece = new Piece(Tetrominos.getRandom());
    nextPiece.setCenterPosition();
    this._nextPieces.push(nextPiece);
 }
@@ -164,8 +175,11 @@ Grid.prototype.removeRow = function(row) {
 Grid.prototype.storePiece = function() {
    const piece = this._storedPiece;
    this._storedPiece = this._activePiece;
-   if (piece)
+   if (piece) {
       this._activePiece = piece;
+      this._ghostPiece.piece = this._activePiece.piece;
+      this.updateGhostPiece();
+   }
    else
       this.getNewActivePiece();
    this._activePiece.setPosition(this._spawnPosition);
@@ -180,41 +194,55 @@ Grid.prototype.storePiece = function() {
  */
 Grid.prototype.movePieceInX = function(direction) {
    this._activePiece.move(direction, 0);
-   if (this.isPieceColliding()) {
+   if (this.isPieceColliding(this._activePiece)) {
       this._activePiece.move(-direction, 0);
    }
+   this.updateGhostPiece();
 }
 
 /**
  * Moves active piece down the grid.
- * Adds active piece to the grid if it collides with the grid
+ * Adds active piece to the grid if it collides with grid unless shouldFake is true
  * Returns true if active piece succeeded in moving.
  */
-Grid.prototype.movePieceDown = function() {
-   this._activePiece.move(0, 1);
-   if (this.isPieceColliding()) {
-      this._activePiece.move(0, -1);
+Grid.prototype.moveActivePieceDown = function(shouldFake) {
+   if (!this.movePieceDown(this._activePiece)) {
       this.addActivePiece();
       return false;
    }
    return true;
 }
 
-Grid.prototype.dropPiece = function() {
-   while (this.movePieceDown());
+Grid.prototype.movePieceDown = function(piece) {
+   piece.move(0, 1);
+   if (this.isPieceColliding(piece)) {
+      piece.move(0, -1);
+      return false;
+   }
+   return true;
+}
+
+Grid.prototype.dropActivePiece = function() {
+   while (this.moveActivePieceDown());
+}
+
+Grid.prototype.dropPiece = function(piece) {
+   while (this.movePieceDown(piece));
 }
 
 Grid.prototype.rotatePieceCounterClockwise = function() {
    this._activePiece.rotateCounterClockwise();
-   if (this.isPieceColliding()) {
+   if (this.isPieceColliding(this._activePiece)) {
       this._activePiece.move(this._activePiece.x <= 0 ? 1 : -1, 0);
    }
+   this.updateGhostPiece();
 }
 
 Grid.prototype.rotatePieceClockwise = function() {
    this._activePiece.rotateClockwise();
-   if (this.isPieceColliding()) {
+   if (this.isPieceColliding(this._activePiece)) {
       this._activePiece.move(this._activePiece.x <= 0 ? 1 : -1, 0);
    }
+   this.updateGhostPiece();
 }
 

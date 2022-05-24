@@ -1,10 +1,11 @@
 
-var Piece = function(pos) {
-   const tetromino = Tetrominos.getRandom();
-   this.tetromino = tetromino;
-
-   this.resetBlocks();
-   this.setPosition(pos);
+var Piece = function(tetromino, pos) {
+   if (tetromino) { // if not a ghost piece
+      this.tetromino = tetromino;
+      this.resetBlocks();
+   }
+   this.x = 0;
+   this.y = 0;
 }
 
 Piece.prototype.resetBlocks = function() {
@@ -86,7 +87,7 @@ Piece.prototype.getSquares = function() {
 
 Piece.prototype.draw = function(ctx) {
    ctx.beginPath();
-   ctx.strokeStyle = "transparent";
+   ctx.strokeStyle = this.strokeColor || "transparent";
    ctx.fillStyle = this.tetromino.color;
    const size = this.piece.length;
    for (let i = 0; i < size; i++) {
