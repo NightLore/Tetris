@@ -112,6 +112,6 @@ GameEngine.prototype.processKeyInput = function() {
 
    // drop
    if (Keys.isPressed(true, Keys.SPACE, Keys.ENTER)) {
-      console.log("drop");
+      this._grid.dropPiece();
    }
 }

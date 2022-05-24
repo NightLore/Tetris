@@ -140,24 +140,31 @@ Grid.prototype.movePieceInX = function(direction) {
 /**
  * Moves active piece down the grid.
  * Adds active piece to the grid if it collides with the grid
+ * Returns true if active piece succeeded in moving.
  */
 Grid.prototype.movePieceDown = function() {
    this._activePiece.move(0, 1);
    if (this.isPieceColliding()) {
       this._activePiece.move(0, -1);
       this.addActivePiece();
+      return false;
    }
+   return true;
+}
+
+Grid.prototype.dropPiece = function() {
+   while (this.movePieceDown());
 }
 
 Grid.prototype.rotatePieceCounterClockwise = function() {
-   this._activePiece.rotateLeft();
+   this._activePiece.rotateCounterClockwise();
    if (this.isPieceColliding()) {
       this._activePiece.move(this._activePiece.x <= 0 ? 1 : -1, 0);
    }
 }
 
 Grid.prototype.rotatePieceClockwise = function() {
-   this._activePiece.rotateRight();
+   this._activePiece.rotateClockwise();
    if (this.isPieceColliding()) {
       this._activePiece.move(this._activePiece.x <= 0 ? 1 : -1, 0);
    }

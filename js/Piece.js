@@ -55,10 +55,7 @@ var Piece = function(pos) {
    this.setPosition(pos);
 }
 
-/**
- * Sets x and y to given position object's x and y.
- * Sets x and y to zero if not given a position
- */
+/** * Sets x and y to given position object's x and y.  * Sets x and y to zero if not given a position */
 Piece.prototype.setPosition = function(pos) {
    pos = {} || pos;
    this.x = pos.x || 0;
@@ -70,7 +67,7 @@ Piece.prototype.move = function(dirX, dirY) {
    this.y += dirY;
 }
 
-Piece.prototype.rotateLeft = function() {
+Piece.prototype.rotateClockwise = function() {
    const size = this.piece.length;
    const x = Math.floor(size / 2);
    const y = size - 1;
@@ -85,7 +82,7 @@ Piece.prototype.rotateLeft = function() {
    }
 }
 
-Piece.prototype.rotateRight = function() {
+Piece.prototype.rotateCounterClockwise = function() {
    const size = this.piece.length;
    const x = Math.floor(size / 2);
    const y = size - 1;
