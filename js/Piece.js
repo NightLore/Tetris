@@ -1,58 +1,15 @@
 
-var Tetrominos = {
-   _all: [],
-
-   I: [[' ', 'X', ' ', ' '],
-       [' ', 'X', ' ', ' '],
-       [' ', 'X', ' ', ' '],
-       [' ', 'X', ' ', ' ']],
-   O: [['X', 'X'],
-       ['X', 'X']],
-   T: [[' ', 'X', ' '],
-       ['X', 'X', ' '],
-       [' ', 'X', ' ']],
-   S: [['X', ' ', ' '],
-       ['X', 'X', ' '],
-       [' ', 'X', ' ']],
-   Z: [[' ', 'X', ' '],
-       ['X', 'X', ' '],
-       ['X', ' ', ' ']],
-   J: [[' ', 'X', ' '],
-       [' ', 'X', ' '],
-       ['X', 'X', ' ']],
-   L: [['X', 'X', ' '],
-       [' ', 'X', ' '],
-       [' ', 'X', ' ']],
-
-   getAll: function() {
-      return [
-         { blocks: this.I, color: "cyan" },
-         { blocks: this.O, color: "yellow" },
-         { blocks: this.T, color: "purple" },
-         { blocks: this.S, color: "green" },
-         { blocks: this.Z, color: "red" },
-         { blocks: this.J, color: "blue" },
-         { blocks: this.L, color: "orange" },
-      ];
-   },
-
-   getRandom: function() {
-      if (this._all.length == 0)
-         this._all = this.getAll();
-      var index = Math.floor(Math.random() * this._all.length);
-      var tetromino = this._all.splice(index, 1)[0];
-      return {
-         blocks: tetromino.blocks.map((row) => [...row]), // return deep copy of tetromino
-         color: tetromino.color
-      }
-   },
-}
-
 var Piece = function(pos) {
    const tetromino = Tetrominos.getRandom();
-   this.piece = tetromino.blocks;
-   this.color = tetromino.color;
+   this.tetromino = tetromino;
+
+   this.resetBlocks();
    this.setPosition(pos);
+}
+
+Piece.prototype.resetBlocks = function() {
+   // deep copy of tetromino blocks
+   this.piece = this.tetromino.blocks.map((row) => [...row]);
 }
 
 /**
@@ -118,7 +75,7 @@ Piece.prototype.getSquares = function() {
          squares.push({
             x: this.x + i,
             y: this.y + j,
-            color: this.color,
+            color: this.tetromino.color,
          });
       }
    }
@@ -128,7 +85,7 @@ Piece.prototype.getSquares = function() {
 Piece.prototype.draw = function(ctx) {
    ctx.beginPath();
    ctx.strokeStyle = "transparent";
-   ctx.fillStyle = this.color;
+   ctx.fillStyle = this.tetromino.color;
    const size = this.piece.length;
    for (let i = 0; i < size; i++) {
       for (let j = 0; j < size; j++) {

@@ -1,4 +1,5 @@
 const UI_BOX_SIZE = 5 * SQUARE_SIZE;
+const NUM_NEXT_PIECES = 4;
 
 var Grid = function(x, y, width, height) {
    this._x = x - width / 2 * SQUARE_SIZE;
@@ -10,7 +11,11 @@ var Grid = function(x, y, width, height) {
    this._spawnPosition = { x: Math.floor(width / 2), y: 0 };
    this._storeProps = { x: -UI_BOX_SIZE - 2, y: 1 };
 
-   this._activePiece = new Piece(this._spawnPosition);
+   this._nextPieces = new Array(NUM_NEXT_PIECES);
+   for (let i = 0; i < NUM_NEXT_PIECES; i++) {
+      this._nextPieces[i] = new Piece(this._spawnPosition);
+   }
+   this.getNewActivePiece();
    this._storedPiece = null;
 
    this._board = new Array(width);
@@ -79,6 +84,11 @@ Grid.prototype.isPieceColliding = function() {
    return false;
 }
 
+Grid.prototype.getNewActivePiece = function() {
+   this._activePiece = this._nextPieces.shift();
+   this._nextPieces.push(new Piece(this._spawnPosition));
+}
+
 Grid.prototype.addActivePiece = function() {
    const rows = new Set();
    const squares = this._activePiece.getSquares();
@@ -92,7 +102,8 @@ Grid.prototype.addActivePiece = function() {
       if (this.checkRow(row))
          this.removeRow(row);
    }
-   this._activePiece = new Piece(this._spawnPosition);
+
+   this.getNewActivePiece();
 }
 
 /**
@@ -122,6 +133,7 @@ Grid.prototype.storePiece = function() {
    this._storedPiece = this._activePiece;
    this._activePiece = piece || new Piece();
    this._activePiece.setPosition(this._spawnPosition);
+   this._storedPiece.resetBlocks();
    this._storedPiece.setCenterPosition();
 }
 
