@@ -8,7 +8,7 @@ var Grid = function(x, y, width, height) {
    this._color = "rgb(50, 50, 50)";
 
    this._spawnPosition = { x: Math.floor(width / 2), y: 0 };
-   this._storePosition = { x: -UI_BOX_SIZE - 2, y: 1 };
+   this._storeProps = { x: -UI_BOX_SIZE - 2, y: 1 };
 
    this._activePiece = new Piece(this._spawnPosition);
    this._storedPiece = null;
@@ -51,14 +51,14 @@ Grid.prototype.draw = function(ctx) {
 
    // store box
    ctx.beginPath();
-   ctx.translate(this._storePosition.x, this._storePosition.y);
+   ctx.translate(this._storeProps.x, this._storeProps.y);
    ctx.strokeStyle = this._color;
    ctx.rect(0, 0, UI_BOX_SIZE, UI_BOX_SIZE);
    ctx.stroke();
 
    // stored piece
    if (this._storedPiece) {
-      ctx.translate(SQUARE_SIZE / 2, SQUARE_SIZE / 2);
+      ctx.translate(UI_BOX_SIZE / 2, UI_BOX_SIZE / 2 + SQUARE_SIZE / 2);
       this._storedPiece.draw(ctx);
    }
 
@@ -122,7 +122,7 @@ Grid.prototype.storePiece = function() {
    this._storedPiece = this._activePiece;
    this._activePiece = piece || new Piece();
    this._activePiece.setPosition(this._spawnPosition);
-   this._storedPiece.setPosition();
+   this._storedPiece.setCenterPosition();
 }
 
 /**

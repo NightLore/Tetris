@@ -57,12 +57,19 @@ var Piece = function(pos) {
 
 /**
  * Sets x and y to given position object's x and y.
+ * Note that x is the center of this piece and y is the top
  * Sets x and y to zero if not given a position
  */
 Piece.prototype.setPosition = function(pos) {
    pos = pos || {};
    this.x = pos.x - Math.floor(this.piece.length / 2) || 0;
    this.y = pos.y || 0;
+}
+
+Piece.prototype.setCenterPosition = function() {
+   const halfWidth = this.piece.length / 2;
+   this.x = -halfWidth;
+   this.y = -halfWidth;
 }
 
 Piece.prototype.move = function(dirX, dirY) {
