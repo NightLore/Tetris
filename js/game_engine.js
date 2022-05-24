@@ -10,9 +10,6 @@ var GameEngine = function(canvas, FPS) {
    this.height = canvas.height;
    this.uiObjects = [];
    this._grid = new Grid(10, 20);
-   this._activePiece = new Piece();
-   this._storedPiece = undefined;
-   console.log("Engine created. FPS set to", FPS, this.FPS);
 }
  
 /**
@@ -83,46 +80,36 @@ GameEngine.prototype.draw = function() {
    this.context2D.setTransform(1,0,0,1,0,0); // reset the transform matrix as it is cumulative
    this.context2D.clearRect(0, 0, this.canvas.width, this.canvas.height);//clear the viewport AFTER the matrix is reset
    this._grid.draw(this.context2D);
-   this._activePiece.draw(this.context2D);
-   if (this._storedPiece)
-      this._storedPiece.draw(this.context2D);
 }
 
 GameEngine.prototype.processKeyInput = function() {
-   // left
-   if (Keys.isPressed(false, Keys.A, Keys.LEFT)) {
-      this._activePiece.moveLeft(this._grid);
-   }
    // store
    if (Keys.isPressed(true, Keys.W, Keys.C, Keys.LEFTSHIFT, Keys.RIGHTSHIFT)) {
-      console.log("store");
-      var piece = this._storedPiece;
-      this._storedPiece = this._activePiece;
-      this._activePiece = piece || new Piece();
-      this._activePiece.x = 0;
-      this._activePiece.y = 0;
-      this._storedPiece.x = 15;
-      this._storedPiece.y = 2;
+      this._grid.storePiece();
+   }
+
+   // left
+   if (Keys.isPressed(false, Keys.A, Keys.LEFT)) {
+      this._grid.movePieceInX(-1);
    }
    // right
    if (Keys.isPressed(false, Keys.D, Keys.RIGHT)) {
-      this._activePiece.moveRight(this._grid);
+      this._grid.movePieceInX(1);
    }
    // down
    if (Keys.isPressed(false, Keys.S, Keys.DOWN)) {
-      if (!this._activePiece.moveDown(this._grid)) {
-         this._grid.addPiece(this._activePiece);
-         this._activePiece = new Piece();
-      }
+      this._grid.movePieceDown();
    }
+
    // rotate left
    if (Keys.isPressed(true, Keys.Q, Keys.Z)) {
-      this._activePiece.rotateLeft(this._grid);
+      this._grid.rotatePieceCounterClockwise();
    }
    // rotate right
    if (Keys.isPressed(true, Keys.E, Keys.UP,  Keys.X)) {
-      this._activePiece.rotateRight(this._grid);
+      this._grid.rotatePieceClockwise();
    }
+
    // drop
    if (Keys.isPressed(true, Keys.SPACE, Keys.ENTER)) {
       console.log("drop");

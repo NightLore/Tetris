@@ -45,49 +45,17 @@ var Piece = function(x, y, color, p) {
    this.color = color || "rgb(255, 0, 0)";
 }
 
-/**
- * Attempt to move piece left in the given grid.
- * Does not move if it will collide with grid.
- * Returns true if succeeded to move left, false otherwise.
- */
-Piece.prototype.moveLeft = function(grid) {
-   this.x--;
-   if (grid.isColliding(this)) {
-      this.x++;
-      return false;
-   }
-   return true;
+Piece.prototype.setPosition = function(x, y) {
+   this.x = x;
+   this.y = y;
 }
 
-/**
- * Attempt to move piece right in the given grid.
- * Does not move if it will collide with grid.
- * Returns true if succeeded to move right, false otherwise.
- */
-Piece.prototype.moveRight = function(grid) {
-   this.x++;
-   if (grid.isColliding(this)) {
-      this.x--;
-      return false;
-   }
-   return true;
+Piece.prototype.move = function(dirX, dirY) {
+   this.x += dirX;
+   this.y += dirY;
 }
 
-/**
- * Attempt to move piece down in the given grid.
- * Does not move if it will collide with grid.
- * Returns true if succeeded to move down, false otherwise.
- */
-Piece.prototype.moveDown = function(grid) {
-   this.y++;
-   if (grid.isColliding(this)) {
-      this.y--;
-      return false;
-   }
-   return true;
-}
-
-Piece.prototype.rotateLeft = function(grid) {
+Piece.prototype.rotateLeft = function() {
    const size = this.piece.length;
    const x = Math.floor(size / 2);
    const y = size - 1;
@@ -100,11 +68,9 @@ Piece.prototype.rotateLeft = function(grid) {
          this.piece[y-j][i] = temp;
       }
    }
-   if (grid.isColliding(this))
-      this.x += this.x <= 0 ? 1 : -1;
 }
 
-Piece.prototype.rotateRight = function(grid) {
+Piece.prototype.rotateRight = function() {
    const size = this.piece.length;
    const x = Math.floor(size / 2);
    const y = size - 1;
@@ -117,8 +83,6 @@ Piece.prototype.rotateRight = function(grid) {
          this.piece[j][y-i] = temp;
       }
    }
-   if (grid.isColliding(this))
-      this.x += this.x <= 0 ? 1 : -1;
 }
 
 Piece.prototype.getSquares = function() {
