@@ -9,11 +9,26 @@ var Grid = function(x, y, width, height) {
    this._color = "rgb(50, 50, 50)";
 
    this._spawnPosition = { x: Math.floor(width / 2), y: 0 };
-   this._storeProps = { x: -UI_BOX_SIZE - 2, y: 1 };
+   this._storeProps = {
+      boxX: -UI_BOX_SIZE - 2,
+      boxY: 1,
+      boxSize: UI_BOX_SIZE,
+      pieceX: UI_BOX_SIZE / 2,
+      pieceY: UI_BOX_SIZE / 2 + SQUARE_SIZE / 2,
+   };
+   this._nextProps = {
+      boxX: width * SQUARE_SIZE + 2,
+      boxY: 1,
+      boxWidth: UI_BOX_SIZE,
+      boxHeight: UI_BOX_SIZE * NUM_NEXT_PIECES * 2 / 3,
+      pieceX: UI_BOX_SIZE / 2,
+      pieceY: UI_BOX_SIZE / 2 + SQUARE_SIZE / 2,
+   };
 
    this._nextPieces = new Array(NUM_NEXT_PIECES);
    for (let i = 0; i < NUM_NEXT_PIECES; i++) {
       this._nextPieces[i] = new Piece(this._spawnPosition);
+      this._nextPieces[i].setCenterPosition();
    }
    this.getNewActivePiece();
    this._storedPiece = null;
@@ -56,17 +71,31 @@ Grid.prototype.draw = function(ctx) {
 
    // store box
    ctx.beginPath();
-   ctx.translate(this._storeProps.x, this._storeProps.y);
+   ctx.translate(this._storeProps.boxX, this._storeProps.boxY);
    ctx.strokeStyle = this._color;
-   ctx.rect(0, 0, UI_BOX_SIZE, UI_BOX_SIZE);
+   ctx.rect(0, 0, this._storeProps.boxSize, this._storeProps.boxSize);
    ctx.stroke();
 
    // stored piece
    if (this._storedPiece) {
-      ctx.translate(UI_BOX_SIZE / 2, UI_BOX_SIZE / 2 + SQUARE_SIZE / 2);
+      ctx.translate(this._storeProps.pieceX, this._storeProps.pieceY);
       this._storedPiece.draw(ctx);
+      ctx.translate(-this._storeProps.pieceX, -this._storeProps.pieceY);
    }
+   ctx.translate(-this._storeProps.boxX, -this._storeProps.boxY);
 
+   // display next pieces
+   ctx.beginPath();
+   ctx.translate(this._nextProps.boxX, this._nextProps.boxY);
+   ctx.strokeStyle = this._color;
+   ctx.rect(0, 0, this._nextProps.boxWidth, this._nextProps.boxHeight);
+   ctx.stroke();
+
+   ctx.translate(this._nextProps.pieceX, this._nextProps.pieceY);
+   for (let i = 0; i < NUM_NEXT_PIECES; i++) {
+      this._nextPieces[i].draw(ctx);
+      ctx.translate(0, this._nextProps.pieceY);
+   }
 }
 
 Grid.prototype.inBounds = function(x, y) {
@@ -86,7 +115,11 @@ Grid.prototype.isPieceColliding = function() {
 
 Grid.prototype.getNewActivePiece = function() {
    this._activePiece = this._nextPieces.shift();
-   this._nextPieces.push(new Piece(this._spawnPosition));
+   this._activePiece.setPosition(this._spawnPosition);
+
+   const nextPiece = new Piece();
+   nextPiece.setCenterPosition();
+   this._nextPieces.push(nextPiece);
 }
 
 Grid.prototype.addActivePiece = function() {
@@ -131,7 +164,10 @@ Grid.prototype.removeRow = function(row) {
 Grid.prototype.storePiece = function() {
    const piece = this._storedPiece;
    this._storedPiece = this._activePiece;
-   this._activePiece = piece || new Piece();
+   if (piece)
+      this._activePiece = piece;
+   else
+      this.getNewActivePiece();
    this._activePiece.setPosition(this._spawnPosition);
    this._storedPiece.resetBlocks();
    this._storedPiece.setCenterPosition();
