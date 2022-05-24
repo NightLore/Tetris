@@ -33,8 +33,7 @@ var Tetrominos = {
          this._all = this.getAll();
       var index = Math.floor(Math.random() * this._all.length);
       var tetromino = this._all.splice(index, 1)[0];
-      console.log(index, tetromino);
-      return tetromino;
+      return tetromino.map((row) => [...row]); // return deep copy of tetromino
    },
 }
 
