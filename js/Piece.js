@@ -37,16 +37,20 @@ var Tetrominos = {
    },
 }
 
-var Piece = function(x, y, color, p) {
-   this.piece = p || Tetrominos.getRandom();
-   this.x = x || 0;
-   this.y = y || 0;
-   this.color = color || "rgb(255, 0, 0)";
+var Piece = function(pos) {
+   this.piece = Tetrominos.getRandom();
+   this.color = "rgb(255, 0, 0)";
+   this.setPosition(pos);
 }
 
-Piece.prototype.setPosition = function(x, y) {
-   this.x = x;
-   this.y = y;
+/**
+ * Sets x and y to given position object's x and y.
+ * Sets x and y to zero if not given a position
+ */
+Piece.prototype.setPosition = function(pos) {
+   pos = {} || pos;
+   this.x = pos.x || 0;
+   this.y = pos.y || 0;
 }
 
 Piece.prototype.move = function(dirX, dirY) {
@@ -104,6 +108,7 @@ Piece.prototype.getSquares = function() {
 
 Piece.prototype.draw = function(ctx) {
    ctx.beginPath();
+   ctx.strokeStyle = "transparent";
    ctx.fillStyle = this.color;
    const size = this.piece.length;
    for (let i = 0; i < size; i++) {

@@ -9,7 +9,7 @@ var GameEngine = function(canvas, FPS) {
    this.width = canvas.width;
    this.height = canvas.height;
    this.uiObjects = [];
-   this._grid = new Grid(10, 20);
+   this._grid = new Grid(this.width / 2, 0, 10, 20);
 }
  
 /**

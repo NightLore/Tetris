@@ -1,10 +1,18 @@
+const UI_BOX_SIZE = 5 * SQUARE_SIZE;
 
-var Grid = function(width, height) {
+var Grid = function(x, y, width, height) {
+   this._x = x - width / 2 * SQUARE_SIZE;
+   this._y = y + 2 * SQUARE_SIZE;
    this._width = width;
    this._height = height;
    this._color = "rgb(50, 50, 50)";
-   this._activePiece = new Piece(Math.floor(this._width / 2), 0);
+
+   this._spawnPosition = { x: Math.floor(this._width / 2), y: 0 };
+   this._storePosition = { x: -UI_BOX_SIZE - 2, y: 1 };
+
+   this._activePiece = new Piece(this._spawnPosition.x, this._spawnPosition.y);
    this._storedPiece = null;
+
    this._board = new Array(width);
    for (let i = 0; i < width; i++) {
       this._board[i] = new Array(height);
@@ -12,7 +20,12 @@ var Grid = function(width, height) {
 }
 
 Grid.prototype.draw = function(ctx) {
+   ctx.translate(this._x, this._y);
+   ctx.lineWidth = 1;
+
+   // board
    ctx.beginPath();
+   ctx.strokeStyle = "transparent"
    ctx.fillStyle = this._color;
    for (let i = 0; i < this._width; i++) {
       for (let j = 0; j < this._height; j++) {
@@ -20,6 +33,7 @@ Grid.prototype.draw = function(ctx) {
       }
    }
 
+   // filled pieces in board
    ctx.beginPath();
    for (let i = 0; i < this._width; i++) {
       for (let j = 0; j < this._height; j++) {
@@ -32,9 +46,22 @@ Grid.prototype.draw = function(ctx) {
       }
    }
 
+   // active piece
    this._activePiece.draw(ctx);
-   if (this._storedPiece)
+
+   // store box
+   ctx.beginPath();
+   ctx.translate(this._storePosition.x, this._storePosition.y);
+   ctx.strokeStyle = this._color;
+   ctx.rect(0, 0, UI_BOX_SIZE, UI_BOX_SIZE);
+   ctx.stroke();
+
+   // stored piece
+   if (this._storedPiece) {
+      ctx.translate(SQUARE_SIZE / 2, SQUARE_SIZE / 2);
       this._storedPiece.draw(ctx);
+   }
+
 }
 
 Grid.prototype.inBounds = function(x, y) {
@@ -65,7 +92,7 @@ Grid.prototype.addActivePiece = function() {
       if (this.checkRow(row))
          this.removeRow(row);
    }
-   this._activePiece = new Piece(Math.floor(this._width / 2), 0);
+   this._activePiece = new Piece(this._spawnPosition);
 }
 
 /**
@@ -94,8 +121,8 @@ Grid.prototype.storePiece = function() {
    const piece = this._storedPiece;
    this._storedPiece = this._activePiece;
    this._activePiece = piece || new Piece();
-   this._activePiece.setPosition(Math.floor(this._width / 2), 0);
-   this._storedPiece.setPosition(15, 2);
+   this._activePiece.setPosition(this._spawnPosition);
+   this._storedPiece.setPosition();
 }
 
 /**
