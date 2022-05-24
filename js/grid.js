@@ -7,10 +7,10 @@ var Grid = function(x, y, width, height) {
    this._height = height;
    this._color = "rgb(50, 50, 50)";
 
-   this._spawnPosition = { x: Math.floor(this._width / 2), y: 0 };
+   this._spawnPosition = { x: Math.floor(width / 2), y: 0 };
    this._storePosition = { x: -UI_BOX_SIZE - 2, y: 1 };
 
-   this._activePiece = new Piece(this._spawnPosition.x, this._spawnPosition.y);
+   this._activePiece = new Piece(this._spawnPosition);
    this._storedPiece = null;
 
    this._board = new Array(width);

@@ -2,27 +2,27 @@
 var Tetrominos = {
    _all: [],
 
-   I: [[' ', ' ', ' ', ' '],
-       ['X', 'X', 'X', 'X'],
-       [' ', ' ', ' ', ' '],
-       [' ', ' ', ' ', ' ']],
+   I: [[' ', 'X', ' ', ' '],
+       [' ', 'X', ' ', ' '],
+       [' ', 'X', ' ', ' '],
+       [' ', 'X', ' ', ' ']],
    O: [['X', 'X'],
        ['X', 'X']],
    T: [[' ', 'X', ' '],
-       ['X', 'X', 'X'],
-       [' ', ' ', ' ']],
-   S: [[' ', 'X', 'X'],
        ['X', 'X', ' '],
-       [' ', ' ', ' ']],
-   Z: [['X', 'X', ' '],
-       [' ', 'X', 'X'],
-       [' ', ' ', ' ']],
-   J: [['X', ' ', ' '],
-       ['X', 'X', 'X'],
-       [' ', ' ', ' ']],
-   L: [[' ', ' ', 'X'],
-       ['X', 'X', 'X'],
-       [' ', ' ', ' ']],
+       [' ', 'X', ' ']],
+   S: [['X', ' ', ' '],
+       ['X', 'X', ' '],
+       [' ', 'X', ' ']],
+   Z: [[' ', 'X', ' '],
+       ['X', 'X', ' '],
+       ['X', ' ', ' ']],
+   J: [[' ', 'X', ' '],
+       [' ', 'X', ' '],
+       ['X', 'X', ' ']],
+   L: [['X', 'X', ' '],
+       [' ', 'X', ' '],
+       [' ', 'X', ' ']],
 
    getAll: function() {
       return [
@@ -55,10 +55,13 @@ var Piece = function(pos) {
    this.setPosition(pos);
 }
 
-/** * Sets x and y to given position object's x and y.  * Sets x and y to zero if not given a position */
+/**
+ * Sets x and y to given position object's x and y.
+ * Sets x and y to zero if not given a position
+ */
 Piece.prototype.setPosition = function(pos) {
-   pos = {} || pos;
-   this.x = pos.x || 0;
+   pos = pos || {};
+   this.x = pos.x - Math.floor(this.piece.length / 2) || 0;
    this.y = pos.y || 0;
 }
 
