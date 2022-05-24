@@ -25,7 +25,15 @@ var Tetrominos = {
        [' ', ' ', ' ']],
 
    getAll: function() {
-      return [this.I, this.O, this.T, this.S, this.Z, this.J, this.L];
+      return [
+         { blocks: this.I, color: "cyan" },
+         { blocks: this.O, color: "yellow" },
+         { blocks: this.T, color: "purple" },
+         { blocks: this.S, color: "green" },
+         { blocks: this.Z, color: "red" },
+         { blocks: this.J, color: "blue" },
+         { blocks: this.L, color: "orange" },
+      ];
    },
 
    getRandom: function() {
@@ -33,13 +41,17 @@ var Tetrominos = {
          this._all = this.getAll();
       var index = Math.floor(Math.random() * this._all.length);
       var tetromino = this._all.splice(index, 1)[0];
-      return tetromino.map((row) => [...row]); // return deep copy of tetromino
+      return {
+         blocks: tetromino.blocks.map((row) => [...row]), // return deep copy of tetromino
+         color: tetromino.color
+      }
    },
 }
 
 var Piece = function(pos) {
-   this.piece = Tetrominos.getRandom();
-   this.color = "rgb(255, 0, 0)";
+   const tetromino = Tetrominos.getRandom();
+   this.piece = tetromino.blocks;
+   this.color = tetromino.color;
    this.setPosition(pos);
 }
 
