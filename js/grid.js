@@ -101,21 +101,6 @@ Grid.prototype.draw = function(ctx) {
    }
 }
 
-Grid.prototype.inBounds = function(x, y) {
-   return 0 <= x && x < this._width
-       && 0 <= y && y < this._height;
-}
-
-Grid.prototype.isPieceColliding = function(piece) {
-   const squares = piece.getSquares();
-   for (let i = 0; i < squares.length; i++) {
-      const {x, y} = squares[i];
-      if (!this.inBounds(x, y) || this._board[x][y])
-         return true;
-   }
-   return false;
-}
-
 Grid.prototype.updateGhostPiece = function() {
    this._ghostPiece.x = this._activePiece.x;
    this._ghostPiece.y = this._activePiece.y;
@@ -177,14 +162,29 @@ Grid.prototype.storePiece = function() {
    this._storedPiece = this._activePiece;
    if (piece) {
       this._activePiece = piece;
+      this._activePiece.setPosition(this._spawnPosition);
       this._ghostPiece.piece = this._activePiece.piece;
       this.updateGhostPiece();
    }
    else
       this.getNewActivePiece();
-   this._activePiece.setPosition(this._spawnPosition);
    this._storedPiece.resetBlocks();
    this._storedPiece.setCenterPosition();
+}
+
+Grid.prototype.inBounds = function(x, y) {
+   return 0 <= x && x < this._width
+       && 0 <= y && y < this._height;
+}
+
+Grid.prototype.isPieceColliding = function(piece) {
+   const squares = piece.getSquares();
+   for (let i = 0; i < squares.length; i++) {
+      const {x, y} = squares[i];
+      if (!this.inBounds(x, y) || this._board[x][y])
+         return squares[i];
+   }
+   return false;
 }
 
 /**
@@ -232,17 +232,82 @@ Grid.prototype.dropPiece = function(piece) {
 
 Grid.prototype.rotatePieceCounterClockwise = function() {
    this._activePiece.rotateCounterClockwise();
-   if (this.isPieceColliding(this._activePiece)) {
-      this._activePiece.move(this._activePiece.x <= 0 ? 1 : -1, 0);
-   }
+   this.toClosestAvailableSpace();
    this.updateGhostPiece();
 }
 
 Grid.prototype.rotatePieceClockwise = function() {
    this._activePiece.rotateClockwise();
-   if (this.isPieceColliding(this._activePiece)) {
-      this._activePiece.move(this._activePiece.x <= 0 ? 1 : -1, 0);
-   }
+   this.toClosestAvailableSpace();
    this.updateGhostPiece();
+}
+
+const SPACES_TO_CHECK = [
+   { dx:  0, dy: -1 },
+   { dx:  1, dy:  0 },
+   { dx: -1, dy:  0 },
+   { dx:  1, dy: -1 },
+   { dx: -1, dy: -1 },
+   { dx:  2, dy:  0 },
+   { dx: -2, dy:  0 },
+   { dx:  0, dy: -2 },
+   { dx:  1, dy: -2 },
+   { dx: -1, dy: -2 },
+   { dx:  0, dy: -3 },
+   { dx:  1, dy: -3 },
+   { dx: -1, dy: -3 },
+   { dx:  0, dy: -4 },
+   { dx:  1, dy: -4 },
+   { dx: -1, dy: -4 },
+   { dx:  0, dy: -5 },
+   { dx:  1, dy: -5 },
+   { dx: -1, dy: -5 },
+];
+
+Grid.prototype.toClosestAvailableSpace = function() {
+   const piece = this._activePiece;
+   let square = this.isPieceColliding(piece);
+   if (!square)
+      return;
+
+   this.moveActivePieceInBounds();
+
+   square = this.isPieceColliding(piece);
+   if (!square)
+      return;
+
+   for (let i = 0; i < SPACES_TO_CHECK.length; i++) {
+      const {dx, dy} = SPACES_TO_CHECK[i];
+      // skip possibilities that would let piece break through walls
+      if (piece.x < square.x && dx > 0) continue;
+      if (piece.x >= square.x && dx < 0) continue;
+
+      const spot = {
+         x: square.x + dx,
+         y: square.y + dy
+      };
+      if (this.inBounds(spot.x, spot.y) && !this._board[spot.x][spot.y]) {
+         piece.move(dx, dy);
+         square = this.isPieceColliding(piece);
+         if (!square)
+            return;
+         piece.move(-dx, -dy);
+      }
+   }
+}
+
+Grid.prototype.moveActivePieceInBounds = function() {
+   const piece = this._activePiece;
+   let squares = piece.getSquares();
+   let deltaX = 0;
+   for (let i = 0; i < squares.length; i++) {
+      if (!this.inBounds(squares[i].x, squares[i].y)) {
+         if (squares[i].x < 0)
+            deltaX++;
+         else
+            deltaX--;
+      }
+   }
+   piece.move(deltaX, 0);
 }
 
