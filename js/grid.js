@@ -38,7 +38,7 @@ var Grid = function(x, y, width, height) {
       this._nextPieces[i] = new Piece(Tetrominos.getRandom());
       this._nextPieces[i].setCenterPosition();
    }
-   this.getNewActivePiece();
+   this.spawnNewActivePiece();
 }
 
 Grid.prototype.draw = function(ctx) {
@@ -107,7 +107,7 @@ Grid.prototype.updateGhostPiece = function() {
    this.dropPiece(this._ghostPiece);
 }
 
-Grid.prototype.getNewActivePiece = function() {
+Grid.prototype.spawnNewActivePiece = function() {
    this._activePiece = this._nextPieces.shift();
    this._activePiece.setPosition(this._spawnPosition);
    this._ghostPiece.piece = this._activePiece.piece;
@@ -116,6 +116,8 @@ Grid.prototype.getNewActivePiece = function() {
    const nextPiece = new Piece(Tetrominos.getRandom());
    nextPiece.setCenterPosition();
    this._nextPieces.push(nextPiece);
+   if (this.isPieceColliding(this._activePiece))
+      this.gameOver = true;
 }
 
 Grid.prototype.addActivePiece = function() {
@@ -132,7 +134,7 @@ Grid.prototype.addActivePiece = function() {
          this.removeRow(row);
    }
 
-   this.getNewActivePiece();
+   this.spawnNewActivePiece();
 }
 
 /**
@@ -157,7 +159,7 @@ Grid.prototype.removeRow = function(row) {
    }
 }
 
-Grid.prototype.storePiece = function() {
+Grid.prototype.storeActivePiece = function() {
    const piece = this._storedPiece;
    this._storedPiece = this._activePiece;
    if (piece) {
@@ -167,7 +169,7 @@ Grid.prototype.storePiece = function() {
       this.updateGhostPiece();
    }
    else
-      this.getNewActivePiece();
+      this.spawnNewActivePiece();
    this._storedPiece.resetBlocks();
    this._storedPiece.setCenterPosition();
 }
@@ -192,7 +194,7 @@ Grid.prototype.isPieceColliding = function(piece) {
  * A positive direction indicates right, negative direction indicates left.
  * Does not move if it will collide with grid.
  */
-Grid.prototype.movePieceInX = function(direction) {
+Grid.prototype.moveActivePieceInX = function(direction) {
    this._activePiece.move(direction, 0);
    if (this.isPieceColliding(this._activePiece)) {
       this._activePiece.move(-direction, 0);
@@ -205,7 +207,7 @@ Grid.prototype.movePieceInX = function(direction) {
  * Adds active piece to the grid if it collides with grid unless shouldFake is true
  * Returns true if active piece succeeded in moving.
  */
-Grid.prototype.moveActivePieceDown = function(shouldFake) {
+Grid.prototype.moveActivePieceDown = function() {
    if (!this.movePieceDown(this._activePiece)) {
       this.addActivePiece();
       return false;

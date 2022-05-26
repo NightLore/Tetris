@@ -3,9 +3,13 @@
  * Constructs a basic game engine
  */
 var GameEngine = function(canvas, FPS) {
-   this.FPS = 1000 / FPS;
    this.canvas = canvas;
    this.context2D = canvas.getContext("2d");
+
+   this.FPS = 1000 / FPS; // milliseconds per frame;
+   this.gravity = 200; // drop per millisecond
+   this._gravityCounter = 0;
+
    this.width = canvas.width;
    this.height = canvas.height;
    this.uiObjects = [];
@@ -54,22 +58,29 @@ GameEngine.prototype.resize_canvas = function() {
 /**
  * Runs the game loop
  */
-GameEngine.prototype.run = function() {
-   var desiredTime = Date.now() + this.FPS;
- 
-   this.update();
-   this.draw();
+GameEngine.prototype.run = async function() {
+   let delay = 0; // milliseconds
+   while (!this._grid.gameOver) {
+      let startTime = Date.now();
 
-   var engine = this;
- 
-   var interval = Math.max(0, desiredTime-Date.now());
-   setTimeout( function() { engine.run() }, interval); // basic infinite loop
+      this.update(delay);
+      this.draw();
+
+      delay = Math.max(0, this.FPS - (Date.now() - startTime));
+      await new Promise(resolve => setTimeout(resolve, delay));
+   }
+   console.log("Game Over");
 }
  
 /**
  * Updates the logic of the game with all the game objects
  */
-GameEngine.prototype.update = function() {
+GameEngine.prototype.update = function(delay) {
+   this._gravityCounter += delay;
+   if (this._gravityCounter > this.gravity) {
+      this._grid.moveActivePieceDown();
+      this._gravityCounter -= this.gravity;
+   }
    this.processKeyInput();
 }
  
@@ -85,20 +96,22 @@ GameEngine.prototype.draw = function() {
 GameEngine.prototype.processKeyInput = function() {
    // store
    if (Keys.isPressed(true, Keys.W, Keys.C, Keys.LEFTSHIFT, Keys.RIGHTSHIFT)) {
-      this._grid.storePiece();
+      this._grid.storeActivePiece();
+      this._gravityCounter = 0;
    }
 
    // left
    if (Keys.isPressed(false, Keys.A, Keys.LEFT)) {
-      this._grid.movePieceInX(-1);
+      this._grid.moveActivePieceInX(-1);
    }
    // right
    if (Keys.isPressed(false, Keys.D, Keys.RIGHT)) {
-      this._grid.movePieceInX(1);
+      this._grid.moveActivePieceInX(1);
    }
    // down
    if (Keys.isPressed(false, Keys.S, Keys.DOWN)) {
       this._grid.moveActivePieceDown();
+      this._gravityCounter = 0;
    }
 
    // rotate left
@@ -113,5 +126,6 @@ GameEngine.prototype.processKeyInput = function() {
    // drop
    if (Keys.isPressed(true, Keys.SPACE, Keys.ENTER)) {
       this._grid.dropActivePiece();
+      this._gravityCounter = 0;
    }
 }
