@@ -2,6 +2,7 @@
 var Keys = {
    _pressed: {},
    _processed: {},
+   _shouldProcess: {},
 
    W: "KeyW",
    A: "KeyA",
@@ -14,7 +15,6 @@ var Keys = {
    BACKSPACE: "Backspace",
    LEFTSHIFT: "ShiftLeft",
    RIGHTSHIFT: "ShiftRight",
-
 
    LEFT: "ArrowLeft",
    UP: "ArrowUp",
@@ -39,15 +39,20 @@ var Keys = {
       for (let i = 0; i < keyCodes.length; i++)
       {
          let keyCode = keyCodes[i];
-         if (this._pressed[keyCode] && !this._processed[keyCode]) {
+         if (this._shouldProcess[keyCode] && !this._processed[keyCode]) {
+         //if (this._pressed[keyCode] && !this._processed[keyCode]) {
             this._processed[keyCode] = shouldProcess;
+            this._shouldProcess[keyCode] = false;
             return keyCode;
          }
       }
       return false;
    },
     
-   onKeyDown: function(e) { this._pressed[e.code] = true; },
+   onKeyDown: function(e) {
+      this._pressed[e.code] = true;
+      this._shouldProcess[e.code] = true;
+   },
    onKeyUp: function(e) {
       delete this._pressed[e.code];
       delete this._processed[e.code];
