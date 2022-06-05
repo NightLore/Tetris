@@ -12,7 +12,6 @@ var GameEngine = function(canvas, FPS) {
 
    this.width = canvas.width;
    this.height = canvas.height;
-   this.uiObjects = [];
    this._grid = new Grid(this.width / 2, 0, 10, 20);
 }
  
@@ -69,7 +68,6 @@ GameEngine.prototype.run = async function() {
       delay = Math.max(0, this.FPS - (Date.now() - startTime));
       await new Promise(resolve => setTimeout(resolve, delay));
    }
-   console.log("Game Over");
 }
  
 /**

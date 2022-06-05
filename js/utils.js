@@ -107,7 +107,7 @@ function setElementSize(canvas,element,size,changeFont) {
    return size;
 }
 
-const SQUARE_SIZE = 10;
+const SQUARE_SIZE = 16;
 
 function drawSquare(ctx, x, y) {
    ctx.rect(x * SQUARE_SIZE, y * SQUARE_SIZE, SQUARE_SIZE - 1, SQUARE_SIZE - 1);
